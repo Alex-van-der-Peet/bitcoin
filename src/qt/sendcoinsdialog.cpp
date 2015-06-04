@@ -221,14 +221,7 @@ void SendCoinsDialog::on_sendButton_clicked()
         return;
     }
 
-    fNewRecipientAllowed = false;
-    WalletModel::UnlockContext ctx(model->requestUnlock());
-    if(!ctx.isValid())
-    {
-        // Unlock wallet was cancelled
-        fNewRecipientAllowed = true;
-        return;
-    }
+
 
     // prepare transaction for getting txFee earlier
     WalletModelTransaction currentTransaction(recipients);
@@ -321,6 +314,15 @@ void SendCoinsDialog::on_sendButton_clicked()
 
     if(retval != QMessageBox::Yes)
     {
+        fNewRecipientAllowed = true;
+        return;
+    }
+
+    fNewRecipientAllowed = false;
+    WalletModel::UnlockContext ctx(model->requestUnlock());
+    if(!ctx.isValid())
+    {
+        // Unlock wallet was cancelled
         fNewRecipientAllowed = true;
         return;
     }
